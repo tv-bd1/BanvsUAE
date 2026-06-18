@@ -1,512 +1,68 @@
 <!DOCTYPE html>
-
-<html lang="en">
-
-<head>
-
-<meta charset="UTF-8" />
-
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-
-<title>Best iptv-Web Version</title>
-
-
-
-<!-- Google Fonts -->
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
-
-
-
-<!-- Font Awesome -->
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-
-
-<style>
-
-  :root {
-
-    --primary: #e67e22;
-
-    --primary-dark: #cf711f;
-
-    --bg-light: #fff8f1;
-
-    --bg-dark: #2c2c2c;
-
-    --text-dark: #333;
-
-    --text-light: #fff;
-
-    --btn-bg: #f5c27a;
-
-    --btn-hover: #e1a53b;
-
-    --shadow: rgba(0,0,0,0.15);
-
-  }
-
-  * {
-
-    box-sizing: border-box;
-
-  }
-
-  body {
-
-    margin: 0; 
-
-    font-family: 'Inter', sans-serif;
-
-    background-color: var(--bg-light);
-
-    color: var(--text-dark);
-
-    display: flex; 
-
-    flex-direction: column;
-
-    min-height: 100vh;
-
-  }
-
-  #playerContainer {
-
-    width: 100%;
-
-    max-width: 960px;
-
-    aspect-ratio: 16 / 9;
-
-    margin: 20px auto 10px;
-
-    border-radius: 10px;
-
-    overflow: hidden;
-
-    box-shadow: 0 8px 20px var(--shadow);
-
-    background: #000;
-
-  }
-
-  .server-section {
-
-    max-width: 960px;
-
-    margin: 0 auto 20px;
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 14px;
-
-    overflow-x: auto;
-
-    padding: 0 10px;
-
-  }
-
-  .server-btn {
-
-    background: var(--btn-bg);
-
-    border: none;
-
-    padding: 12px 20px;
-
-    border-radius: 30px;
-
-    font-weight: 600;
-
-    font-size: 14px;
-
-    color: var(--text-dark);
-
-    cursor: pointer;
-
-    flex-shrink: 0;
-
-    position: relative;
-
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-    box-shadow: 0 4px 8px var(--shadow);
-
-  }
-
-  .server-btn:hover {
-
-    background-color: var(--btn-hover);
-
-    color: #fff;
-
-  }
-
-  .server-btn.active {
-
-    background-color: var(--primary);
-
-    color: #fff;
-
-    box-shadow: 0 6px 14px var(--primary-dark);
-
-  }
-
-  .server-btn .server-quality {
-
-    font-size: 11px;
-
-    display: block;
-
-    margin-top: 4px;
-
-    opacity: 0.8;
-
-  }
-
-  .server-btn.active::after {
-
-    content: "✓";
-
-    position: absolute;
-
-    right: 12px;
-
-    top: 50%;
-
-    transform: translateY(-50%);
-
-    font-weight: 900;
-
-    font-size: 18px;
-
-    color: #fff;
-
-  }
-
-  .info-section {
-
-    max-width: 960px;
-
-    margin: 0 auto 30px;
-
-    background: #fff;
-
-    border-radius: 12px;
-
-    box-shadow: 0 8px 18px var(--shadow);
-
-    padding: 24px;
-
-    color: var(--text-dark);
-
-  }
-
-  .match-banner {
-
-    max-width: 240px;
-
-    display: block;
-
-    margin: 0 auto 20px;
-
-    border-radius: 8px;
-
-    box-shadow: 0 4px 12px var(--shadow);
-
-  }
-
-  .description {
-
-    font-size: 16px;
-
-    text-align: center;
-
-    margin-bottom: 16px;
-
-    line-height: 1.5;
-
-  }
-
-  .meta-info {
-
-    font-size: 14px;
-
-    background: #fdf1de;
-
-    border-left: 5px solid var(--primary);
-
-    padding: 14px 20px;
-
-    border-radius: 6px;
-
-    color: #7a5a12;
-
-    margin-bottom: 20px;
-
-  }
-
-  .share-section h3 {
-
-    font-weight: 600;
-
-    margin-bottom: 12px;
-
-    text-align: center;
-
-    color: var(--primary);
-
-  }
-
-  .share-buttons {
-
-    display: flex;
-
-    justify-content: center;
-
-    gap: 18px;
-
-  }
-
-  .share-buttons a {
-
-    width: 40px;
-
-    height: 40px;
-
-    display: flex;
-
-    background: var(--btn-bg);
-
-    border-radius: 50%;
-
-    align-items: center;
-
-    justify-content: center;
-
-    color: var(--text-dark);
-
-    font-size: 18px;
-
-    text-decoration: none;
-
-    box-shadow: 0 4px 12px var(--shadow);
-
-    transition: background-color 0.3s ease, color 0.3s ease;
-
-  }
-
-  .share-buttons a:hover {
-
-    background: var(--primary);
-
-    color: #fff;
-
-  }
-
-  .share-buttons a.facebook:hover { background: #3b5998; }
-
-  .share-buttons a.twitter:hover { background: #1da1f2; }
-
-  .share-buttons a.whatsapp:hover { background: #25d366; }
-
-  .ad-wrapper {
-
-    max-width: 960px;
-
-    margin: 0 auto 30px;
-
-    text-align: center;
-
-  }
-
-  /* Scrollbar hide for servers */
-
-  .server-section::-webkit-scrollbar {
-
-    display: none;
-
-  }
-
-  .server-section {
-
-    -ms-overflow-style: none;  /* IE and Edge */
-
-    scrollbar-width: none;  /* Firefox */
-
-  }
-
-</style>
-
+<html>
+<head> 
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
+    <title>CineArena.Fun</title> 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/shaka-player.ui.min.js" crossorigin="anonymous"></script> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/shaka-player/4.7.11/controls.min.css" crossorigin="anonymous">
+    <style> 
+        * { margin: 0; padding: 0; box-sizing: border-box; } 
+        html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
+        .shaka-video-container { position: absolute; inset: 0; width: 100%; height: 100%; }
+        video { width: 100%; height: 100%; background: #000; object-fit: contain; }
+        .shaka-spinner-container, .shaka-spinner, .shaka-spinner-svg { display: none !important; visibility: hidden !important; opacity: 0 !important; }
+        .shaka-controls-button, .shaka-overflow-button-label, .shaka-current-time, .shaka-time-container { color: dark-blue !important; }
+        .shaka-controls-button svg path { fill: #1e90ff !important; }
+    </style>
 </head>
-
-<body>
-
-
-
-<div id="playerContainer"></div>
-
-
-
-<div class="server-section">
-
-  <button class="server-btn active" data-url="https://fl7.moveonjoy.com/WILLOW_CRICKET/index.m3u8">
-
-    BAN Vs PAK
-
-    <span class="server-quality">Server 1</span>
-
-  </button>
-
-  <button class="server-btn" data-url="https://fl7.moveonjoy.com/WILLOW_CRICKET/index.m3u8">
-
-    Willow Sports 
-
-    <span class="server-quality">Server 2</span>
-
-  </button>
-
-  <button class="server-btn" data-url="https://live-en.aisports.cc/moviebox/device01/playlist.m3u8">
-
-    Sony Live 
-
-    <span class="server-quality">Server 3</span>
-
-  </button>
-
-</div>
-
-
-
-<div class="info-section">
-
-  <img src="https://i.postimg.cc/9XyrL8mX/FB-IMG-1758793988545.jpg" alt="Match Banner" class="match-banner" />
-
-  <p class="description">
-
-    🏏 <strong>বাংলাদেশ বনাম পাকিস্তান</strong> লাইভ স্ট্রিমিং<br>
-
-    উপরের সার্ভার থেকে পছন্দমতো একটি সিলেক্ট করুন।
-
-  </p>
-
-  <p class="meta-info">
-
-    ⚠️ সমস্যা হলে অন্য সার্ভার চেষ্টা করুন অথবা আমাদের জানান।<br>
-
-    📌 ভালো কানেকশনের জন্য Wi-Fi ব্যবহার করুন।
-
-  </p>
-
-
-
-  <div class="share-section">
-
-    <h3><i class="fas fa-share-alt"></i> Share this Stream</h3>
-
-    <div class="share-buttons">
-
-      <a href="#" class="facebook" title="Facebook" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
-
-      <a href="#" class="twitter" title="Twitter" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-
-      <a href="#" class="whatsapp" title="WhatsApp" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
-
+<body> 
+    <div class="shaka-video-container" data-shaka-player> 
+        <video autoplay muted playsinline preload="metadata" poster="https://i.postimg.cc/mD1VCt2C/RS-Live.png"></video>
     </div>
 
-  </div>
+    <script> 
+        document.addEventListener('DOMContentLoaded', async () => { 
+            shaka.polyfill.installAll();
+            if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
+            const video = document.querySelector('video'); 
+            const player = new shaka.Player(); 
+            await player.attach(video);
+            const container = document.querySelector('.shaka-video-container'); 
+            const ui = new shaka.ui.Overlay(player, container, video);
+            
+            ui.configure({ 
+                controlPanelElements: [ 'play_pause', 'mute', 'volume', 'time_and_duration', 'spacer', 'language', 'captions', 'picture_in_picture', 'quality', 'fullscreen' ], 
+                volumeBarColors: { base: 'rgba(135, 206, 235, 0.35)', level: 'rgb(255,255,255)' }, 
+                seekBarColors: { base: 'rgba(50, 55, 61)', buffered: 'rgba(135, 206, 235, 0.6)', played: 'rgb(255, 255, 255)' } 
+            });
 
-</div>
+            const drmConfig = {
+                clearKeys: { "513d389521a73afdd3cf0a74e53f3b2f":"392f7f7d2e451631e1075b20ce61f901" } 
+            }; 
+            
+            let streamUrl = "https://otte.cache.aiv-cdn.net/iad-nitro/live/clients/dash/enc/wvhgrxe0zw/out/v1/d336867052f04861bc67d2c567f31596/cenc.mpd"; 
+            
+            player.configure({ 
+                drm: drmConfig, 
+                streaming: { lowLatencyMode: true, bufferingGoal: 15, rebufferingGoal: 2, bufferBehind: 15, retryParameters: { timeout: 10000, maxAttempts: 5, baseDelay: 300, backoffFactor: 1.2 }, segmentRequestTimeout: 8000, segmentPrefetchLimit: 2, useNativeHlsOnSafari: true }, 
+                manifest: { retryParameters: { timeout: 8000, maxAttempts: 3 } } 
+            });
 
-
-
-<!-- Clappr Player JS -->
-
-<script src="https://cdn.jsdelivr.net/npm/clappr@latest/dist/clappr.min.js"></script>
-
-<script>
-
-  document.addEventListener('DOMContentLoaded', () => {
-
-    const playerContainer = document.getElementById('playerContainer');
-
-    const serverButtons = document.querySelectorAll('.server-btn');
-
-    let player;
-
-
-
-    function loadStream(url) {
-
-      playerContainer.style.opacity = '0.4';
-
-      setTimeout(() => {
-
-        if (player) player.destroy();
-
-        player = new Clappr.Player({
-
-          source: url,
-
-          parentId: '#playerContainer',
-
-          autoPlay: true,
-
-          height: '100%',
-
-          width: '100%',
-
-          mute: true,
-
-        });
-
-        playerContainer.style.opacity = '1';
-
-      }, 200);
-
-    }
-
-
-
-    serverButtons.forEach(btn => {
-
-      btn.addEventListener('click', () => {
-
-        if (btn.classList.contains('active')) return;
-
-        serverButtons.forEach(b => b.classList.remove('active'));
-
-        btn.classList.add('active');
-
-        loadStream(btn.dataset.url);
-
-      });
-
-    });
-
-
-
-    // Load default active server stream
-
-    const activeBtn = document.querySelector('.server-btn.active');
-
-    if (activeBtn) loadStream(activeBtn.dataset.url);
-
-  });
-
-</script>
-
-
-
-<!-- Ads Section -->
-
-<div class="ad-wrapper">
-
- <script type='text/javascript' src='//pl26377172.profitableratecpm.com/d7/8b/93/d78b9343b29d8ff89244b094b359e591.js'></script>
+            player.addEventListener('error', (event) => { console.error('Shaka Player Error:', event.detail); });
+            
+            try { 
+                await player.load(streamUrl); 
+                console.log("Stream loaded successfully");
+                video.muted = true; 
+                const playPromise = video.play(); 
+                if (playPromise !== undefined) { playPromise.catch(err => console.log("Autoplay blocked:", err)); }
+            } catch (error) { console.error('Load error:', error); }
+            
+            document.addEventListener('click', () => { 
+                if (video.muted) { video.muted = false; video.volume = 1; } 
+            }, { once: true }); 
+        }); 
+    </script>
 </body>
-
 </html>
