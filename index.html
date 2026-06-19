@@ -11,59 +11,63 @@
         html, body { background: #000; height: 100vh; width: 100vw; overflow: hidden; font-family: system-ui, -apple-system, sans-serif; }
         .shaka-video-container { position: absolute; inset: 0; width: 100%; height: 100%; }
         video { width: 100%; height: 100%; background: #000; object-fit: contain; }
-        .shaka-spinner-container, .shaka-spinner, .shaka-spinner-svg { display: none !important; visibility: hidden !important; opacity: 0 !important; }
-        .shaka-controls-button, .shaka-overflow-button-label, .shaka-current-time, .shaka-time-container { color: dark-blue !important; }
-        .shaka-controls-button svg path { fill: #1e90ff !important; }
+        
+        /* লোডিং এনিমেশন স্টাইল */
+        #loader {
+            position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 50px; height: 50px; border: 5px solid #f3f3f3;
+            border-top: 5px solid #1e90ff; border-radius: 50%;
+            animation: spin 1s linear infinite; z-index: 10;
+        }
+        @keyframes spin { 0% { transform: translate(-50%, -50%) rotate(0deg); } 100% { transform: translate(-50%, -50%) rotate(360deg); } }
     </style>
 </head>
 <body> 
     <div class="shaka-video-container" data-shaka-player> 
-        <video autoplay muted playsinline preload="metadata" poster="https://d34080pnh6e62j.cloudfront.net/images/channels/mobile_large/17816859931020x576.jpg"></video>
+        <div id="loader"></div> <video autoplay muted playsinline preload="metadata" poster="https://d34080pnh6e62j.cloudfront.net/images/channels/mobile_large/17816859931020x576.jpg"></video>
     </div>
 
     <script> 
         document.addEventListener('DOMContentLoaded', async () => { 
+            const video = document.querySelector('video'); 
+            const loader = document.getElementById('loader');
+
             shaka.polyfill.installAll();
             if (!shaka.Player.isBrowserSupported()) { console.error('Browser not supported'); return; }
-            const video = document.querySelector('video'); 
+            
             const player = new shaka.Player(); 
             await player.attach(video);
             const container = document.querySelector('.shaka-video-container'); 
             const ui = new shaka.ui.Overlay(player, container, video);
             
+            // ভিডিও লোড হলে লোডার সরিয়ে নেওয়া
+            video.addEventListener('loadeddata', () => { loader.style.display = 'none'; });
+
             ui.configure({ 
                 controlPanelElements: [ 'play_pause', 'mute', 'volume', 'time_and_duration', 'spacer', 'language', 'captions', 'picture_in_picture', 'quality', 'fullscreen' ], 
                 volumeBarColors: { base: 'rgba(135, 206, 235, 0.35)', level: 'rgb(255,255,255)' }, 
                 seekBarColors: { base: 'rgba(50, 55, 61)', buffered: 'rgba(135, 206, 235, 0.6)', played: 'rgb(255, 255, 255)' } 
             });
 
-            const drmConfig = {
-                clearKeys: { "1544c349ebb47984ba648348b5eb4664":"b5aa349bbd609812fe85c2cc4b732d27" } 
-            }; 
-            
+            const drmConfig = { clearKeys: { "1544c349ebb47984ba648348b5eb4664":"b5aa349bbd609812fe85c2cc4b732d27" } }; 
             let streamUrl = "https://a96aivottlinear-a.akamaihd.net/OTTB/iad-nitro/enc/y4zizfzlo7/out/v1/cf00c1bacc0c4c8ba9da5218b8a6fe37/cenc.mpd"; 
             
             player.configure({ 
                 drm: drmConfig, 
-                streaming: { lowLatencyMode: true, bufferingGoal: 15, rebufferingGoal: 2, bufferBehind: 15, retryParameters: { timeout: 10000, maxAttempts: 5, baseDelay: 300, backoffFactor: 1.2 }, segmentRequestTimeout: 8000, segmentPrefetchLimit: 2, useNativeHlsOnSafari: true }, 
-                manifest: { retryParameters: { timeout: 8000, maxAttempts: 3 } } 
+                streaming: { lowLatencyMode: true, bufferingGoal: 15, rebufferingGoal: 2, bufferBehind: 15 } 
             });
 
-            player.addEventListener('error', (event) => { console.error('Shaka Player Error:', event.detail); });
-            
             try { 
                 await player.load(streamUrl); 
-                console.log("Stream loaded successfully");
-                video.muted = true; 
-                const playPromise = video.play(); 
-                if (playPromise !== undefined) { playPromise.catch(err => console.log("Autoplay blocked:", err)); }
-            } catch (error) { console.error('Load error:', error); }
+            } catch (error) { 
+                console.error('Load error:', error); 
+                loader.style.display = 'none'; // এরর আসলেও লোডার বন্ধ হবে
+            }
             
             document.addEventListener('click', () => { 
                 if (video.muted) { video.muted = false; video.volume = 1; } 
             }, { once: true }); 
         }); 
     </script>
-    <script src="https://pl26377172.effectivecpmnetwork.com/d7/8b/93/d78b9343b29d8ff89244b094b359e591.js"></script>
 </body>
 </html>
